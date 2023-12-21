@@ -34,18 +34,25 @@ import androidx.compose.ui.graphics.Color.Companion.Magenta
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
+import com.example.myapplication.app.App
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import javax.inject.Inject
 
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var vmFactory: MainViewModelFactory
 
     private lateinit var vm: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        (applicationContext as App).appComponent.inject(this)
+
         Log.e("AAA", "Activity Created")
 
-        vm = ViewModelProvider(this, MainViewModelFactory(applicationContext))
+        vm = ViewModelProvider(this, vmFactory)
             .get(MainViewModel::class.java)
 
         setContent {
@@ -63,9 +70,7 @@ class MainActivity : ComponentActivity() {
         }
 
     }
-    private fun closeActivity() {
-        finish() // Вызовет onDestroy() для Activity и onCleared() для ViewModel
-    }
+
 }
 
 @Composable
